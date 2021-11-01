@@ -8,10 +8,8 @@ def dice1():
           "|   *   |",
           "|       |",
           "|_______|"]
-    
     return rv
     
-
 def dice2():
     """
     Purpose: To make an illustration for the 2-side of a die
@@ -22,9 +20,7 @@ def dice2():
           "|       |",
           "|     * |",
           "|_______|"]
-    
     return rv
-
 
 def dice3():
     """
@@ -36,9 +32,7 @@ def dice3():
           "|   *   |",
           "|     * |",
           "|_______|"]
-    
     return rv
-
 
 def dice4():
     """
@@ -50,9 +44,7 @@ def dice4():
           "|       |",
           "| *   * |",
           "|_______|"]
-    
     return rv
-
 
 def dice5():
     """
@@ -64,10 +56,8 @@ def dice5():
           "|   *   |",
           "| *   * |",
           "|_______|"]
-    
     return rv
     
-
 def dice6():
     """
     Purpose: To make an illustration for the 6-side of a die
@@ -78,53 +68,44 @@ def dice6():
           "| *   * |",
           "| *   * |",
           "|_______|"]
-    
     return rv
-
-
 
 def match(roll_list):
     """
-    Inputs: Takes in a dice roll number
-    Purpose: To match a number to an illustration
+    Inputs: Takes in a list of dice roll integers
+    Purpose: To match each number of a dice roll to an illustration
     Output: The list of strings of the illustration
     """
     rv = []
-    
+    dice_list = []
     for num in roll_list:
-        
         if num == 1:
-            rv.append(dice1())
-        
+            dice_list.append(dice1())
         elif num == 2:
-            rv.append(dice2())
-        
-        elif num ==3:
-            rv.append(dice3())
-        
+            dice_list.append(dice2())
+        elif num == 3:
+            dice_list.append(dice3())
         elif num == 4:
-            rv.append(dice4())
-        
+            dice_list.append(dice4())
         elif num == 5:
-            rv.append(dice5())
-        
-        else:
-            rv.append(dice6())
+            dice_list.append(dice5())
+        elif num == 6:
+            dice_list.append(dice6())
             
-            
-            
-            
-    new = []
-    for j in range(len(rv[0])):                                                         #This allows for an illustration of any number of dice
-        
-        row = ''
-        for i in range(len(rv)):
-        
-            row += rv[i][j]
-            row += '  '
-            
-        new.append(row)
-        
-    return new
+
+    # Join 10 dice strings at a time as a line
+    num_lines = ((len(dice_list)-1) // 10) + 1
+    for line in range(num_lines):
+        # Iterate through each row of the dice illustrations for line
+        for j in range(len(dice_list[10*line])):                           
+            row = ''
+            # Iterate through each die for current row, joining all dice strings 
+            # for that row into one string for correct printing
+            for i in range(10*line, min(len(dice_list), 10*line + 10)):
+                row += dice_list[i][j]
+                row += '  '
+            rv.append(row)
+
+    return rv
             
             

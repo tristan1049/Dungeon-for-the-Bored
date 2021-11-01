@@ -1,0 +1,25 @@
+These are notes for the project, involving ideas, plans, and bugs.
+
+----------------------------------------------------------------------------------
+Bugs:
+----
+----------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------
+Improvements:
+------------
+- Split inventory into different sections: potions, scrolls, etc
+----------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------
+Ideas:
+-----
+- Add gear that players can equip to certain slots, gives boosts 
+    - Add damage reduction, dodging, critical hits, etc.
+
+- Add items that increase things such as luck (probability of getting items)
+
+- Add money system
+
+- Add bag limit (can be expanded permanently with something like money)
+----------------------------------------------------------------------------------
