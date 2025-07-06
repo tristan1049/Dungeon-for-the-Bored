@@ -51,18 +51,20 @@ def clear_queue(queue):
     return queue
 
 def print_queue(queue):
-    """Print the print queue to user, returning queue"""
+    """Print and clear the print queue, returning queue"""
     sys.stdout.flush()
     os.system('clear')
     for line in queue:
         print(line)
+    queue.clear()
     return queue
 
 def input_with_queue(queue, input_string):
     """Print the print queue to the user with input message,
     and return the user input string"""
     print_queue(queue)
-    return input(input_string)
+    queue.clear()
+    return input(input_string).strip()
 
 def choose_one(obj_list, weights):
     """

@@ -2,6 +2,7 @@ from Enemy import Enemy
 from Floor import Floor
 from Consumables import Consumable
 from Util import c, inp, inp_clear
+from Util import add_to_queue, print_queue
 import time
 import math
 import Illustrations
@@ -26,51 +27,59 @@ class Fight(object):
          
     def get_battle_options(self):
         """
-        Purpose: To print the options for the player in battle
+        Purpose: To get the options for the player in battle
         """
-        print("Your options are: ")
-        print('Fight')
-        print('Items')
-        print('Run')
+        q = []
+        add_to_queue(q, "Your options are: \n")
+        add_to_queue(q, "Fight\n")
+        add_to_queue(q, "Items\n")
+        add_to_queue(q, "Run\n")
+        return q
         
     def get_resting_options(self):
         """
-        Purpose: To print options for the player out of battle
+        Purpose: To get the options for the player out of battle
         """
-        print("Your options are: ")
-        print('Proceed')
-        print('Items')
-        print('Run')
+        q = []
+        add_to_queue(q, "Your options are: \n")
+        add_to_queue(q, "Proceed\n")
+        add_to_queue(q, "Items\n")
+        add_to_queue(q, "Run\n")
+        return q
 
-    def print_item_description(self, item: Consumable):
+    def get_item_description(self, item: Consumable):
         """
         Inputs:
             item: Consumable object
-        Purpose: To print out the description of an item as a header
+        Purpose: To get the description of an item as a header
         """
-        print(item) 
-        print()
-        print('---'*20) 
+        q = []
+        add_to_queue(q, str(item) + "\n")
+        add_to_queue(q, "---"*20)
+        add_to_queue(q, "\n")
+        return q
 
-    def print_item_options(self, item: Consumable):
+    def get_item_options(self, item: Consumable):
         """
         Inputs:
             item: Consumable object in player's inventory
-        Purpose: To print options for the player for consuming a selected item
+        Purpose: To get options for the player for consuming a selected item
         """
-        self.print_item_description(item)
-        print('Your options are:')
-        print('Use')
-        print('Throw away')
-        print('Back')
-        print()
+        q = []
+        add_to_queue(q, self.get_item_description(item))
+        add_to_queue("Your options are:\n")
+        add_to_queue("Use\n")
+        add_to_queue("Throw away\n")
+        add_to_queue("Back\n")
+        return q
 
-    def print_level(self, player: Player):
+    def get_level(self, player: Player):
         """
         Inputs:
             player: Player object
-        Purpose: Print the level and experience bar for player
+        Purpose: Gets the level and experience bar for player
         """
+        q = []
         # Print out the experience bar for the player
         exp = player.get_exp()
         level_exp = player.get_exp_next_level()

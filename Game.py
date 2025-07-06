@@ -1,8 +1,9 @@
 import Player
 import Floor
 import Fight
-from Util import save_obj
 import time
+from Util import save_obj
+from Util import add_to_queue
 
 
 class Game(object):
@@ -29,6 +30,7 @@ class Game(object):
         self.floor = None
         self.num_floors = num_floors
         self.level = 0
+        self.q = []
         
     def is_ongoing(self):
         """
@@ -99,12 +101,10 @@ class Game(object):
         while self.is_ongoing():
             self.next_floor()
             if self.get_status() == 'won':
-                print("You beat the dungeon!! Great job!")
+                add_to_queue(self.q, "You beat the dungeon!! Great job!")
             elif self.get_status() == 'ran':
-                print("You safely escape the dungeon with your life, and live to fight another day.")
+                add_to_queue(self.q, "You safely escape the dungeon with your life, and live to fight another day.")
             elif self.get_status() == 'lost':
-                print('Oh noo! You died!')
-                
+                add_to_queue(self.q, 'Oh noo! You died!')
+            save_obj({'player': self.get_player()}, self.get_player().get_name())  
         time.sleep(2)
-        # Save the game to the file 
-        save_obj({'player': self.get_player()}, self.get_player().get_name())            

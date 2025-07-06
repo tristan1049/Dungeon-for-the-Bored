@@ -1,4 +1,5 @@
 from Dice import Dice
+from Util import add_to_queue, print_queue
 import time
 
 class Player(object):
@@ -221,5 +222,7 @@ class Player(object):
         Purpose: A representation of the player's current status
         Output: A string representation of player's stats
         """
-        print('player:{}'.format(self.name))
-        print('HP:{}/{}'.format(self.HP, self.maxHP))
+        q = []
+        add_to_queue(q, "player:{}".format(self.name))
+        add_to_queue(q, "HP:{}/{}".format(self.HP, self.maxHP))
+        print_queue(q)
