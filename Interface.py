@@ -1,6 +1,3 @@
-import os
-import time
-
 import Game
 from Util import c, inp, inp_clear
 from Util import add_to_queue, add_list_to_queue, clear_queue, print_queue, input_with_queue

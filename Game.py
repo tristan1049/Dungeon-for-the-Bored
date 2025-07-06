@@ -1,8 +1,7 @@
 import Player
-import Dice
 import Floor
 import Fight
-from Util import c, inp, save_obj
+from Util import save_obj
 import time
 
 
