@@ -14,14 +14,11 @@ class Enemy(Player.Player):
             HP: Integer representing Health Points, default to 20
         Purpose: To instantiate an adjustable class for an anonymous enemy
         """
-        self.maxHP = HP
-        self.HP = HP
-        self.name = name
+        super().__init__(name)
         self.Dice = [Dice.Dice()]
-        self.status = 'alive'
-        self.items = []
-        self.exp = 0
         self.floor = floor
+        self.HP = HP
+        self.maxHP = HP
         
     def give_items(self, player: Player):
         """
@@ -52,7 +49,7 @@ class Enemy(Player.Player):
         """Provide false checking"""
         return not self.__eq__(other)
     
-class Rabid_Rabbit(Enemy):
+class RabidRabbit(Enemy):
     """Creates a Rabid Rabbit object, deriving from Enemy"""
     def __init__(self, name: str="Rabid Rabbit", HP: int=10, floor: int=1):
         """
@@ -61,10 +58,10 @@ class Rabid_Rabbit(Enemy):
             HP: Integer representing Health Points, default to 10
         Purpose: To instantiate an adjustable class for a Rabid Rabbit enemy
         """
-        super(Rabid_Rabbit, self).__init__(name, HP, floor)
+        super(RabidRabbit, self).__init__(name, HP, floor)
         
-        poss_items = [C.Minor_HP_Potion(), C.HP_Potion(), C.Major_HP_Potion(), C.Rejuv_Potion(),
-                      C.Minor_Damage_Scroll(), C.Damage_Scroll(), C.Rabbit_Foot()]
+        poss_items = [C.MinorHPPotion(), C.HPPotion(), C.MajorHPPotion(), C.RejuvPotion(),
+                      C.MinorDamageScroll(), C.DamageScroll(), C.RabbitFoot()]
         weights = [0.4, 0.2, 0.1, 0.1, 0.05, 0.03, 0.03]
         
         self.items += choose_all(poss_items, weights)
@@ -82,8 +79,8 @@ class Wolf(Enemy):
         """
         super(Wolf, self).__init__(name, HP, floor)
         
-        poss_items = [C.Minor_HP_Potion(), C.HP_Potion(), C.Major_HP_Potion(), C.Full_HP_Potion(), C.Rejuv_Potion(),
-                      C.Minor_Damage_Scroll(), C.Damage_Scroll(), C.Major_Damage_Scroll()]
+        poss_items = [C.MinorHPPotion(), C.HPPotion(), C.MajorHPPotion(), C.FullHPPotion(), C.RejuvPotion(),
+                      C.MinorDamageScroll(), C.DamageScroll(), C.MajorDamageScroll()]
         weights = [0.5, 0.25, 0.15, 0.03, 0.15, 0.1, 0.05, 0.01]
         
         self.items += choose_all(poss_items, weights)
@@ -101,15 +98,15 @@ class Goblin(Enemy):
         """
         super(Goblin, self).__init__(name, HP, floor)
         
-        poss_items = [C.HP_Potion(), C.Major_HP_Potion(), C.Full_HP_Potion(), C.Rejuv_Potion(),
-                      C.Minor_Damage_Scroll(), C.Damage_Scroll(), C.Major_Damage_Scroll()]
+        poss_items = [C.HPPotion(), C.MajorHPPotion(), C.FullHPPotion(), C.RejuvPotion(),
+                      C.MinorDamageScroll(), C.DamageScroll(), C.MajorDamageScroll()]
         weights = [0.4, 0.25, 0.05, 0.3, 0.15, 0.1, 0.05]
         
         self.items += choose_all(poss_items, weights)
         self.exp += 15
         
         
-class Venom_Spider(Enemy):
+class VenomSpider(Enemy):
     """Creates a Venomous Spider object, deriving from Enemy"""
     def __init__(self, name: str="Venomous Spider", HP: int=30, floor: int=1):            
         """
@@ -118,10 +115,10 @@ class Venom_Spider(Enemy):
             HP: Integer representing Health Points, default to 30
         Purpose: To instantiate an adjustable class for a Venomous Spider enemy
         """
-        super(Venom_Spider, self).__init__(name, HP, floor)
+        super(VenomSpider, self).__init__(name, HP, floor)
         
-        poss_items = [C.HP_Potion(), C.Major_HP_Potion(), C.Full_HP_Potion(), C.Rejuv_Potion(),
-                      C.Minor_Damage_Scroll(), C.Damage_Scroll(), C.Major_Damage_Scroll()]
+        poss_items = [C.HPPotion(), C.MajorHPPotion(), C.FullHPPotion(), C.RejuvPotion(),
+                      C.MinorDamageScroll(), C.DamageScroll(), C.MajorDamageScroll()]
         weights = [0.6, 0.35, 0.1, 0.35, 0.2, 0.15, 0.08]
         
         self.items += choose_all(poss_items, weights)
@@ -140,15 +137,15 @@ class Assassin(Enemy):
         super(Assassin, self).__init__(name, HP, floor)
         self.add_dice(1)
 
-        poss_items = [C.HP_Potion(), C.Major_HP_Potion(), C.Full_HP_Potion(), C.Rejuv_Potion(),
-                      C.Damage_Scroll(), C.Major_Damage_Scroll()]
+        poss_items = [C.HPPotion(), C.MajorHPPotion(), C.FullHPPotion(), C.RejuvPotion(),
+                      C.DamageScroll(), C.MajorDamageScroll()]
         weights = [0.7, 0.4, 0.15, 0.4, 0.2, 0.1]
         
         self.items += choose_all(poss_items, weights)
         self.exp += 35
 
 
-class Lost_Spirit(Enemy):
+class LostSpirit(Enemy):
     """Creates a Lost Spirit object, deriving from Enemy"""
     def __init__(self, name: str="Lost Spirit", HP: int=50, floor: int=1):            
         """
@@ -157,10 +154,10 @@ class Lost_Spirit(Enemy):
             HP: Integer representing Health Points, default to 50
         Purpose: To instantiate an adjustable class for a Lost Spirit enemy
         """
-        super(Lost_Spirit, self).__init__(name, HP, floor)
+        super(LostSpirit, self).__init__(name, HP, floor)
         
-        poss_items = [C.Major_HP_Potion(), C.Full_HP_Potion(), C.Rejuv_Potion(),
-                      C.Damage_Scroll(), C.Major_Damage_Scroll()]
+        poss_items = [C.MajorHPPotion(), C.FullHPPotion(), C.RejuvPotion(),
+                      C.DamageScroll(), C.MajorDamageScroll()]
         weights = [0.45, 0.2, 0.5, 0.25, 0.15]
         
         self.items += choose_all(poss_items, weights)
@@ -180,7 +177,7 @@ class Boss(Enemy):
         super(Boss, self).__init__(name, HP, floor)
 
     
-class Wolf_Pack(Boss):
+class WolfPack(Boss):
     """Creates a Wolf Pack object, deriving from Boss class"""
     def __init__(self, name: str='Wolf Pack', HP: int=50, floor: int=1):
         """
@@ -189,18 +186,18 @@ class Wolf_Pack(Boss):
             HP: Health points of object, default to 50
         Purpose: To create an instance of a Wolf Pack boss object
         """
-        super(Wolf_Pack, self).__init__(name, HP, floor)
+        super(WolfPack, self).__init__(name, HP, floor)
         self.add_dice(1)                                                          #Has low HP for boss, but 2 dice!
         
-        poss_items = [C.HP_Potion(), C.Major_HP_Potion(), C.Full_HP_Potion(), C.Rejuv_Potion(),
-                      C.Minor_Damage_Scroll(), C.Damage_Scroll(), C.Major_Damage_Scroll()]
+        poss_items = [C.HPPotion(), C.MajorHPPotion(), C.FullHPPotion(), C.RejuvPotion(),
+                      C.MinorDamageScroll(), C.DamageScroll(), C.MajorDamageScroll()]
         weights = [0.6, 0.4, 0.3, 0.4, 0.25, 0.2, 0.1]
         
         self.items += choose_all(poss_items, weights)
         self.exp += 100
 
 
-class Goblin_Mob(Boss):
+class GoblinMob(Boss):
     """Creates a Goblin Mob object, deriving from Boss class"""
     def __init__(self, name: str='Goblin Mob', HP: int=80, floor: int=1):
         """
@@ -209,17 +206,17 @@ class Goblin_Mob(Boss):
             HP: Health points of object, default to 80
         Purpose: To create an instance of a Goblin Mob boss object
         """
-        super(Goblin_Mob, self).__init__(name, HP, floor)
+        super(GoblinMob, self).__init__(name, HP, floor)
         
-        poss_items = [C.HP_Potion(), C.Major_HP_Potion(), C.Full_HP_Potion(), C.Rejuv_Potion(),
-                      C.Minor_Damage_Scroll(), C.Damage_Scroll(), C.Major_Damage_Scroll()]
+        poss_items = [C.HPPotion(), C.MajorHPPotion(), C.FullHPPotion(), C.RejuvPotion(),
+                      C.MinorDamageScroll(), C.DamageScroll(), C.MajorDamageScroll()]
         weights = [0.6, 0.4, 0.3, 0.4, 0.25, 0.2, 0.1]
         
         self.items += choose_all(poss_items, weights)
         self.exp += 100
         
 
-class Head_Assassin(Boss):
+class HeadAssassin(Boss):
     """Creates a Head Assassin object, deriving from Boss class"""
     def __init__(self, name: str='Head Assassin', HP: int=100, floor: int=1):
         """
@@ -228,18 +225,18 @@ class Head_Assassin(Boss):
             HP: Health points of object, default to 80
         Purpose: To create an instance of a Goblin Mob boss object
         """
-        super(Head_Assassin, self).__init__(name, HP, floor)
+        super(HeadAssassin, self).__init__(name, HP, floor)
         self.add_dice(2)
         
-        poss_items = [C.Full_HP_Potion(), C.Rejuv_Potion(),
-                      C.Damage_Scroll(), C.Major_Damage_Scroll()]
+        poss_items = [C.FullHPPotion(), C.RejuvPotion(),
+                      C.DamageScroll(), C.MajorDamageScroll()]
         weights = [0.5, 0.7, 0.5, 0.3]
         
         self.items += choose_all(poss_items, weights)
         self.exp += 250
 
 
-class Spider_Queen(Boss):
+class SpiderQueen(Boss):
     """Creates a Spider Queen object, deriving from Boss class"""
     def __init__(self, name: str='Spider Queen', HP: int=150, floor: int=1):
         """
@@ -248,11 +245,11 @@ class Spider_Queen(Boss):
             HP: Health points of object, default to 80
         Purpose: To create an instance of a Spider Queen boss object
         """
-        super(Spider_Queen, self).__init__(name, HP, floor)
+        super(SpiderQueen, self).__init__(name, HP, floor)
         self.add_dice(1)
         
-        poss_items = [C.Full_HP_Potion(), C.Rejuv_Potion(),
-                      C.Damage_Scroll(), C.Major_Damage_Scroll()]
+        poss_items = [C.FullHPPotion(), C.RejuvPotion(),
+                      C.DamageScroll(), C.MajorDamageScroll()]
         weights = [0.5, 0.7, 0.5, 0.3]
         
         self.items += choose_all(poss_items, weights)

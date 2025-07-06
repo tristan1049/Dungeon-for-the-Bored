@@ -73,7 +73,7 @@ class Game(object):
         Purpose: To make the next floor for the player and start the fight
         """
         self.level += 1
-        self.floor = Floor.get_floor(self.level, self.num_floors)
+        self.floor = Floor.get_floor(self.level)
         
         # Add a die to the player's dice upon beating first boss
         if self.level == 6 and len(self.player.Dice) == 2:

@@ -32,7 +32,7 @@ class Dice(object):
         """
         rv = {i:0 for i in self.Sides}        #Initialize each side to 0 probability
 
-        for test in range(numTrials):
+        for _ in range(numTrials):
             landed = self.toss()                #For each trial, add 1 to landed number
             rv[landed] += 1/float(numTrials)    #Divide each value by numTrials for probability
 

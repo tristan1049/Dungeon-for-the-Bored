@@ -59,20 +59,20 @@ def game_intro():
     return player_name, player_data
 
 if __name__ == "__main__":
-    player_name, save_data = game_intro()
-    g = Game.Game(player_name, save_dict=save_data)
-    q = []
+    player, save_data = game_intro()
+    g = Game.Game(player, save_dict=save_data)
+    queue = []
 
     # Ask the player to start the game, and play if they say yes
     while True:
-        start = input_with_queue(q, "Do you wish to proceed? (y/n) ").lower()
+        start = input_with_queue(queue, "Do you wish to proceed? (y/n) ").lower()
         if start in ['no', 'n', 'exit', 'e']:
-            add_to_queue(q, "You're no fun :(")
-            print_queue(q)
+            add_to_queue(queue, "You're no fun :(")
+            print_queue(queue)
             break
         if start not in ['yes', 'y']:
-            add_to_queue(q, "That wasn't an option, dummy!")
-            print_queue(q)
+            add_to_queue(queue, "That wasn't an option, dummy!")
+            print_queue(queue)
         if start in ['yes', 'y']:
             g.play()
             break

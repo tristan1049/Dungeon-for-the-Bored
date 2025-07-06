@@ -1,31 +1,15 @@
 import os
+import platform
 import sys
 import pickle
 from numpy.random import choice
 
-# Queue that holds list of strings to print to the user
-# Useful as strings can be held for more than one print statement
-queue = []
-
-def c():
-    """Shortcut for clearing the screen"""
-    os.system('clear')
-    print()
 
 def inp(s = ''):
     """For use with the game instead of input() function, compatible 
     with game inputs though system output flushing"""
     sys.stdout.flush()
     return input(s)
-
-def inp_clear(s = ''):
-    """For use with the game instead of input() function, compatible 
-    with game inputs though system output flushing. Clears output after
-    input is received"""
-    sys.stdout.flush()
-    rec = input(s)
-    c()
-    return rec
 
 def get_save_names():
     """Gets the save files of the game"""
@@ -50,20 +34,25 @@ def clear_queue(queue):
     queue.clear()
     return queue
 
-def print_queue(queue):
+def print_queue(queue, do_queue_clear=True):
     """Print and clear the print queue, returning queue"""
     sys.stdout.flush()
-    os.system('clear')
-    for line in queue:
-        print(line)
-    queue.clear()
+    if (platform.system() == "Windows"):
+        os.system("cls")
+    else:
+        os.system("clear")
+    print("\n".join(queue))
+    if do_queue_clear:
+        queue.clear()
     return queue
 
-def input_with_queue(queue, input_string):
+def input_with_queue(queue, input_string, do_queue_clear=True):
     """Print the print queue to the user with input message,
     and return the user input string"""
     print_queue(queue)
-    queue.clear()
+    if do_queue_clear:
+        queue.clear()
+    sys.stdout.flush()
     return input(input_string).strip()
 
 def choose_one(obj_list, weights):

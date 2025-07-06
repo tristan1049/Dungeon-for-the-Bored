@@ -1,4 +1,4 @@
-from Util import c
+from Util import add_to_queue, print_queue
 import Player as Player
 import Enemy as Enemy
 import time
@@ -39,33 +39,36 @@ class Consumable(object):
         # be interchanged when being used
         return (self.name == other.name) and (self.uses == other.uses)
     
-class HP_Potion(Consumable):
-    """Creeates a HP Potion from Consumable Class"""
+class HPPotion(Consumable):
+    """Creates a HP Potion from Consumable Class"""
     def __init__(self, HP_change: int=10):
         """
         Inputs:
             HP_change: Integer amount to heal the player's HP by
         Purpose: To create a Health Potion object
         """
-        self.uses = 1
+        super().__init__()
         self.HP_change = HP_change
         self.name = 'HP Potion'
         
-    def use(self, player: Player, enemy: Enemy=None):
+    def use(self, q, player: Player):
         """
         Inputs: 
             player: The player object
             enemy: Enemy object, default to None for potions
         Purpose: For a player to use the item
+        q is not cleared
         """
         if self.can_use():
             prev_health = player.get_HP()
             player.healing(self.HP_change)
             self.uses -= 1
 
-            print("You successfully used {}.".format(self.name))
+            add_to_queue(q, f"You successfully used {self.name}")
+            print_queue(q, False)
             time.sleep(1)
-            print("You healed for {} HP points!".format(player.get_HP() - prev_health))
+            add_to_queue(q, f"You healed for {player.get_HP() - prev_health} HP points!")
+            print_queue(q, False)
             time.sleep(2)
         
         if self.uses <= 0:
@@ -75,11 +78,11 @@ class HP_Potion(Consumable):
         """
         Purpose: To represent the object in string form
         """
-        return('{}: \n \nRestores the health of the player by {} HP \
-               \nUses: 1 \nUsable in combat and out of combat.'.format(self.name, self.HP_change))
+        return(f"{self.name}: \n \nRestores the health of the player by {self.HP_change} HP \
+               \nUses: 1 \nUsable in combat and out of combat.")
 
     
-class Minor_HP_Potion(HP_Potion):
+class MinorHPPotion(HPPotion):
     """Creates a minor health potion from the HP_Potion class"""
     def __init__(self, HP_change: int=5):
         """
@@ -87,11 +90,11 @@ class Minor_HP_Potion(HP_Potion):
             HP_change: The HP that the player is to be healed up to
         Purpose: To create an instance of a minor HP Potion out of the HP_Potion class
         """
-        super(Minor_HP_Potion, self).__init__(HP_change)
+        super(MinorHPPotion, self).__init__(HP_change)
         self.name = 'Minor HP Potion'
         
     
-class Major_HP_Potion(HP_Potion):
+class MajorHPPotion(HPPotion):
     """Creates a minor health potion from the HP_Potion class"""
     def __init__(self, HP_change: int=20):
         """
@@ -99,11 +102,11 @@ class Major_HP_Potion(HP_Potion):
             HP_change: The HP that the player is to be healed up to
         Purpose: To create an instance of a minor HP Potion out of the HP_Potion class
         """
-        super(Major_HP_Potion, self).__init__(HP_change)
+        super(MajorHPPotion, self).__init__(HP_change)
         self.name = 'Major HP Potion'
         
     
-class Full_HP_Potion(HP_Potion):
+class FullHPPotion(HPPotion):
     """Creates a full health potion from the HP_Potion class"""
     def __init__(self, HP_change: int=None):
         """
@@ -111,10 +114,10 @@ class Full_HP_Potion(HP_Potion):
             HP_change: The HP that the player is healed, set to None since full heal
         Purpose: To create an instance of Full_HP_Potion out of HP_Potion class
         """
-        super(Full_HP_Potion, self).__init__(HP_change)
+        super(FullHPPotion, self).__init__(HP_change)
         self.name = 'Full HP Potion'
           
-    def use(self, player: Player, enemy: Enemy=None):
+    def use(self, q, player: Player):
         """
         Inputs:
             player: The player object
@@ -126,9 +129,11 @@ class Full_HP_Potion(HP_Potion):
             player.healing(player.get_maxHP())
             self.uses -= 1
 
-            print("You successfully used {}.".format(self.name))
+            add_to_queue(q, f"You successfully used {self.name}")
+            print_queue(q, False)
             time.sleep(1)
-            print("You healed for {} HP points!".format(player.get_HP() - prev_health))
+            add_to_queue(q, f"You healed for {player.get_HP() - prev_health} HP points!")
+            print_queue(q, False)
             time.sleep(2)
 
         if self.uses <= 0:
@@ -138,24 +143,24 @@ class Full_HP_Potion(HP_Potion):
         """
         Purpose: To represent the object in string form
         """
-        return('{}: \n \nRestores the health of the player fully \
-               \nUses: 1 \nUsable in combat and out of combat.'.format(self.name))
+        return(f"{self.name}: \n \nRestores the health of the player fully \
+               \nUses: 1 \nUsable in combat and out of combat.")
         
  
-class Rejuv_Potion(HP_Potion):
+class RejuvPotion(HPPotion):
     """Creates an instance of a Rejuvenation Potion, originating from HP Potion class"""
     
-    def __init__(self, HP_change: int=5, turns: int=5):
+    def __init__(self, HP_change: int=5):
         """
         Inputs: HP_change: Integer amount to heal the player per turn
         Purpose: To create an instance of a Rejuvenation potion, which heals
         the player a small amount for a certain amount of turns
         """
-        super(Rejuv_Potion, self).__init__(HP_change)
+        super(RejuvPotion, self).__init__(HP_change)
         self.name = 'Rejuv Potion'
         self.turns = 5
         
-    def use(self, player: Player, enemy: Enemy=None):
+    def use(self, q, player: Player):
         """
         Inputs:
             player: The player object
@@ -164,16 +169,15 @@ class Rejuv_Potion(HP_Potion):
         """
         if self.can_use():
             self.uses -= 1
-            
             player.status_effects.append(self)
-            
-            print("You successfully used {}.".format(self.name))
+            add_to_queue(q, f"You successfully used {self.name}.")
+            print_queue(q, False)
             time.sleep(2)
         
         if self.uses <= 0:
             player.remove_item(self)
 
-    def status_use(self, player: Player, enemy: Enemy=None):
+    def status_use(self, q, player: Player):
         """
         Inputs:
             player: The player object
@@ -184,7 +188,8 @@ class Rejuv_Potion(HP_Potion):
             prev_health = player.get_HP()
             player.healing(self.HP_change)
             self.turns -= 1
-            print("You healed for {} HP points from {}!".format(player.get_HP() - prev_health, self.name))
+            add_to_queue(q, f"You healed for {player.get_HP() - prev_health} HP points from {self.name}!")
+            print_queue(q, False)
         
         # If no turns left, remove status. Always remove immediately when status is gone
         if self.turns <= 0:
@@ -214,7 +219,7 @@ class Rejuv_Potion(HP_Potion):
         return (self.name == other.name) and (self.uses == other.uses) and (self.turns == other.turns)
             
     
-class Dmg_Scroll(Consumable):
+class DmgScroll(Consumable):
     """Creates a Dmg Scroll object"""
     def __init__(self, damage: int=0):
         """
@@ -222,11 +227,12 @@ class Dmg_Scroll(Consumable):
             damage: Integer amount to damage the enemy by
         Purpose: To create a Dmg Scroll object
         """
+        super().__init__()
         self.uses = 1
         self.name = 'Dmg Scroll'
         self.damage = damage
         
-    def use(self, player: Player, enemy: Enemy=None):
+    def use(self, q, player: Player, enemy: Enemy=None):
         """
         Inputs:
             player: The player object
@@ -235,11 +241,13 @@ class Dmg_Scroll(Consumable):
         """
         # Can't use damage scrolls outside of battle
         if not enemy:
-            print("Can't use item outside of battle!")
+            add_to_queue(q, "Can't use item outside of battle!")
+            print_queue(q)
             time.sleep(2)
             return
         if not enemy.is_alive():
-            print("Can't use item outside of battle!")
+            add_to_queue(q, "Can't use item outside of battle!")
+            print_queue(q)
             time.sleep(2)
             return
 
@@ -249,9 +257,11 @@ class Dmg_Scroll(Consumable):
             enemy.damage(self.damage)
             self.uses -= 1
             
-            print("You successfully used {}.".format(self.name))
+            add_to_queue(q, f"You successfully used {self.name}\n")
+            print_queue(q, False)
             time.sleep(1)
-            print("You hurt {} for {} damage!".format(enemy.get_name(), prev_en_health - enemy.get_HP()))
+            add_to_queue(q, f"You hurt {enemy.get_name()} for {prev_en_health - enemy.get_HP()} damage!\n")
+            print_queue(q, False)
             time.sleep(2)
         
         if self.uses <= 0:
@@ -265,7 +275,7 @@ class Dmg_Scroll(Consumable):
                \nUses: 1 \nUsable in combat only.'.format(self.name, self.damage))
         
         
-class Minor_Damage_Scroll(Dmg_Scroll):
+class MinorDamageScroll(DmgScroll):
     """Creates a Minor Damage Scroll object"""
     def __init__(self, damage: int=10):
         """
@@ -273,11 +283,11 @@ class Minor_Damage_Scroll(Dmg_Scroll):
             damage: Integer amount to damage the enemy by
         Purpose: To create a Minor Damage Scroll object
         """
-        super(Minor_Damage_Scroll, self).__init__(damage)
+        super(MinorDamageScroll, self).__init__(damage)
         self.name = 'Minor Damage Scroll'
         
         
-class Damage_Scroll(Dmg_Scroll):
+class DamageScroll(DmgScroll):
     """Creates a Damage Scroll object"""
     def __init__(self, damage: int=15):
         """
@@ -285,11 +295,11 @@ class Damage_Scroll(Dmg_Scroll):
             damage: Integer amount to damage the enemy by
         Purpose: To create a Damage Scroll object
         """
-        super(Damage_Scroll, self).__init__(damage)
+        super(DamageScroll, self).__init__(damage)
         self.name = 'Damage Scroll'
         
         
-class Major_Damage_Scroll(Dmg_Scroll):
+class MajorDamageScroll(DmgScroll):
     """Creates a Major Damage Scroll object"""
     def __init__(self, damage: int=20):
         """
@@ -297,13 +307,14 @@ class Major_Damage_Scroll(Dmg_Scroll):
             damage: Integer amount to damage the enemy by
         Purpose: To create a Major Damage Scroll object
         """
-        super(Major_Damage_Scroll, self).__init__(damage)
+        super(MajorDamageScroll, self).__init__(damage)
         self.name = 'Major Damage Scroll'
 
 
-class Rabbit_Foot(Consumable):
+class RabbitFoot(Consumable):
     """Creates a Rabbit Foot object"""
     def __init__(self):
+        super().__init__()
         self.uses = 1
         self.battles = 1
         self.dice = 2
@@ -311,7 +322,7 @@ class Rabbit_Foot(Consumable):
         self.activated = False
         self.enemy = None
 
-    def use(self, player: Player, enemy: Enemy=None):
+    def use(self, q, player: Player):
         """
         Inputs:
             player: The player object
@@ -325,9 +336,11 @@ class Rabbit_Foot(Consumable):
             player.status_effects.append(self)
             player.add_dice(2)
             
-            print("You successfully used {}.".format(self.name))
+            add_to_queue(q, f"You successfully used {self.name}\n")
+            print_queue(q, False)
             time.sleep(1)
-            print("You gained {} dice for battle!".format(self.dice))
+            add_to_queue(q, f"You gained {self.dice} dice for this battle!\n")
+            print_queue(q, False)
             time.sleep(2)
         
         if self.uses <= 0:

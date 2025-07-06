@@ -1,5 +1,5 @@
 from Dice import Dice
-from Util import add_to_queue, print_queue
+from Util import add_to_queue
 import time
 
 class Player(object):
@@ -191,14 +191,14 @@ class Player(object):
         if self.maxHP < 1:
             self.maxHP = 1
             
-    def update_statuses(self, enemy):
+    def update_statuses(self, q, enemy):
         """
         Purpose: Activate all the status effects of the player for a turn,
         and remove any statuses that expire
         """
         # Update each status effect object
-        for stat in self.get_status_effects():                                          
-            stat.status_use(self, enemy)
+        for stat in self.get_status_effects():
+            stat.status_use(self, q, enemy)
             time.sleep(.4)
             
     def remove_status(self, status):
@@ -223,6 +223,6 @@ class Player(object):
         Output: A string representation of player's stats
         """
         q = []
-        add_to_queue(q, "player:{}".format(self.name))
-        add_to_queue(q, "HP:{}/{}".format(self.HP, self.maxHP))
-        print_queue(q)
+        add_to_queue(q, f"player:{self.name}")
+        add_to_queue(q, f"HP:{self.HP}/{self.maxHP}\n")
+        return "\n".join(q)
