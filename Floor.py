@@ -41,9 +41,9 @@ class Floor_Easy(Floor):
         """
         super(Floor_Easy, self).__init__(level)
         
-        poss_enemy = [E.Rabid_Rabbit(), E.Wolf(), E.Goblin()]
+        poss_enemy = [E.Rabid_Rabbit(floor=level), E.Wolf(floor=level), E.Goblin(floor=level)]
         weights = [0.4, 0.35, 0.25]
-        
+
         self.enemy = choose_one(poss_enemy, weights)
 
 
@@ -57,7 +57,7 @@ class Floor_Medium(Floor):
         """
         super(Floor_Medium, self).__init__(level)
         
-        poss_enemy = [E.Venom_Spider(), E.Lost_Spirit(), E.Assassin()]
+        poss_enemy = [E.Venom_Spider(floor=level), E.Lost_Spirit(floor=level), E.Assassin(floor=level)]
         weights = [0.4, 0.35, 0.25]
         
         self.enemy = choose_one(poss_enemy, weights)
@@ -100,7 +100,7 @@ class Boss_Floor_Easy(Boss_Floor):
         """
         super(Boss_Floor_Easy, self).__init__(level)
         
-        poss_boss = [E.Wolf_Pack(), E.Goblin_Mob()]
+        poss_boss = [E.Wolf_Pack(floor=level), E.Goblin_Mob(floor=level)]
         weights = [0.5, 0.5]
         
         self.enemy = choose_one(poss_boss, weights)
@@ -116,7 +116,7 @@ class Boss_Floor_Medium(Boss_Floor):
         """
         super(Boss_Floor_Medium, self).__init__(level)
         
-        poss_boss = [E.Head_Assassin(), E.Spider_Queen()]
+        poss_boss = [E.Head_Assassin(floor=level), E.Spider_Queen(floor=level)]
         weights = [0.5, 0.5]
         
         self.enemy = choose_one(poss_boss, weights)

@@ -265,12 +265,12 @@ class Fight(object):
 
                                 # Update statuses for the player
                                 self.get_fight_screen(self.player, self.enemy)
-                                self.player.update_statuses()
+                                self.player.update_statuses(self.enemy)
                                 time.sleep(1)
 
                                 # Continue to enemy turn after status update
                                 self.get_fight_screen(self.player, self.enemy)
-                                result = self.enemy_turn(player, enemy, 0, enemy.roll())
+                                result = self.enemy_turn(player, enemy, [])
                                 return result
 
                         # Otherwise not in battle. Use item with item options screen
@@ -310,18 +310,20 @@ class Fight(object):
             time.sleep(1.5)
         return
 
-
-    def player_fight(self, player: Player, enemy: Enemy, p_roll: int):
+    def player_fight(self, player: Player, enemy: Enemy):
         """
         Inputs:
             player: The player object in the battle
             enemy: The enemy object in the battle
             p_roll: The player's roll in the battle
-        Purpose: Plays out a player's turn in battle
+        Purpose: Plays out a player's turn in battle, and returns the player's roll
         """
-        # Get the fight stats and 
+        # Get the fight stats and update statuses 
         self.get_fight_screen(player, enemy) 
-        self.player.update_statuses()
+        self.player.update_statuses(enemy)
+
+        # Get the player's roll after updating statuses
+        p_roll = self.player.roll()
 
         #Sleep in between showing rolls and doing damage to give time for player to see
         time.sleep(1)                                                               
@@ -334,10 +336,11 @@ class Fight(object):
         time.sleep(1)
 
         #Damage the enemy with the player's roll 
-        self.enemy.damage(sum(p_roll))                                 
-        
+        self.enemy.damage(sum(p_roll)) 
 
-    def enemy_turn(self, player: Player, enemy: Enemy, p_roll: int, e_roll: int):
+        return p_roll
+                                       
+    def enemy_turn(self, player: Player, enemy: Enemy, p_roll: list):
         """
         Inputs:
             player: The player object in the battle
@@ -359,6 +362,7 @@ class Fight(object):
         print('{} is still alive!'.format(enemy.get_name())) 
         time.sleep(2)
         
+        e_roll = self.enemy.roll()
         self.get_fight_screen(player, enemy, p_roll, e_roll)
         
         time.sleep(1)
@@ -394,14 +398,11 @@ class Fight(object):
 
             # If fighting, calculate rolls and show fighting screen 
             elif action in ['fight', 'f']:                              
-                roll = self.player.roll()
-                enemy_roll = self.enemy.roll()
-
                 # Simulate the player's turn when action is to fight
-                self.player_fight(self.player, self.enemy, roll)  
+                p_roll = self.player_fight(self.player, self.enemy)  
 
                 # Simulate the enemy's turn and get the result of the end of turn
-                return self.enemy_turn(self.player, self.enemy, roll, enemy_roll)
+                return self.enemy_turn(self.player, self.enemy, p_roll)
 
 
     def battle(self):

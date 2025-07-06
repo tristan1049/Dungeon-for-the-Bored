@@ -1,10 +1,7 @@
 import random
 
-
 class Dice(object):
     """For the creation of a simple dice object"""
-
-
     def __init__(self, numSides=6):
         """
         Inputs:
@@ -14,15 +11,12 @@ class Dice(object):
         self.numSides = numSides
         self.Sides = list(range(1, self.numSides+1))
 
-
     def toss(self):
         """
         Purpose: To model a 'random' toss of a self.numSides sided die
         OutPut: An Integer representing the number that the die 'landed on'
         """
         return random.choice(self.Sides)
-
-
 
     def test_prob(self, numTrials = 1000):
         """
@@ -46,13 +40,7 @@ class Dice(object):
             rv[side] = round(rv[side], 4)
 
         return rv
-
-
-
-
-
-
-
+    
 
 class SimpleLoadedDice(Dice):
     """For the creation of a Dice object that is twice as likely to land on
@@ -65,16 +53,7 @@ class SimpleLoadedDice(Dice):
         OutPut: An Integer representing the number that the loaded die 'landed on'
         """
         return random.choice(self.Sides + [self.numSides])
-
-
-
-
-
-
-
-
-
-
+    
 
 class UnknownLoadedDice(Dice):
     """For the creation of a Dice object that is three times as likely to land

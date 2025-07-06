@@ -1,8 +1,10 @@
 import os
+import time
 
 import Game
 from Util import c, inp, inp_clear
-from Util import del_file, save_obj, load_obj, get_saves
+from Util import add_to_queue, add_list_to_queue, clear_queue, print_queue, input_with_queue
+from Util import del_file, save_obj, load_obj, get_save_names
 
 def game_intro():
     """
@@ -10,50 +12,56 @@ def game_intro():
     player into the style of game and creates or uses a save file
     Output: The data from the save file chosen, if new is chosen then None
     """
-    c()
-    print('Welcome to the Dice Dungeon!')
-    print()
+    q = []
+    player_name = ""
+    player_data = None
+    add_to_queue(q, 'Welcome to the Dice Dungeon!\n')
     
     while True:
-        # Gets the string name of the folder with all save files in it
-        Save_files = get_saves()        
-        # For each file, check that it is a pickle file, and list as option if so                      
-        Save_names = [i[:-4] for i in Save_files if i.endswith('.pkl')]       
+        # Gets the string names of all save files
+        save_files = get_save_names()            
        
-        print('Save files:')
-        print()
-        print('New')
-        for save in Save_names:           
-            print(save)
+       # Add save files to print queue
+        add_to_queue(q, 'Save files:\nNew')
+        add_list_to_queue(q, save_files)
 
         # Take in input for each file name 
-        choice_save = inp_clear('Choose a Save File: ').strip() 
-        if choice_save in Save_names:
-            print('Save: {}'.format(choice_save)) 
-            print()
-            print('--'*30)
-            print('Options:\nPlay \nDelete') 
+        choice_save = input_with_queue(q, '\nChoose a Save File: ').strip()
+        if choice_save in save_files:
+            clear_queue(q)
+            add_to_queue(q, 'Save: {}\n\n'.format(choice_save) + '--'*30 + '\nOptions:\nPlay\nDelete')
 
             # For chosen file, take action to either play or it delete it
-            File_Action = inp_clear('What would you like to do? ').lower().strip()
-            if File_Action in ['delete', 'd']:
+            file_action = input_with_queue(q, 'What would you like to do? ').lower().strip()
+            clear_queue(q)
+            if file_action in ['delete', 'd']:
                 del_file(choice_save)
+
             # If chosen file is not new, then load the file and use for the game
-            elif File_Action in ['play', 'p']:      
+            elif file_action in ['play', 'p']:      
                 player_data = load_obj(choice_save)
                 player_name = choice_save
                 break
 
         # If new file, then play game from beginning
-        elif choice_save.lower() in ['new', 'n']: 
-            print("This dungeon is filled with, like, monsters and shit," + 
+        elif choice_save.lower() in ['new', 'n']:
+            clear_queue(q)
+            add_to_queue(q, "This dungeon is filled with, like, monsters and shit," + 
                 "you have to kill them! I hope you're ready, because that's the only way out.")
-            inp_clear('Press enter to continue: ')
-            player_name = inp_clear("Anyways, what's your name? ").strip()
-            player_data = None
+            input_with_queue(q, 'Press enter to continue: ')
+            clear_queue(q)
+            player_name = input_with_queue(q, "Anyways, what's your name? ").strip()
+            clear_queue(q)
             break
+
+        else:
+            clear_queue(q)
+            add_to_queue(q, "Choose an available option\n")
+
     
-    print("Alright {}, we\'re all counting on you! Who knows, you may even find some cool things along the way...".format(player_name))
+    add_to_queue(q, "Alright {}, we\'re all counting on you! Who knows, you may even find some cool things along the way...".format(player_name))
+    print_queue(q)
+    clear_queue(q)
     return player_name, player_data
 
 if __name__ == "__main__":

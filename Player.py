@@ -135,14 +135,23 @@ class Player(object):
         """
         return self.HP > 0
 
-    def add_dice(self, Dice: Dice):
+    def add_dice(self, num: int):
         """
         Inputs:
-            Dice: A Dice object from Dice.py
-        Purpose: To add a die to the player's inventory
+            num: Nonnegative integer number of Dice objects to add to player
+        Purpose: To add dice to the player's inventory
         """
-        self.Dice.append(Dice)
+        for _ in range(num):
+            self.Dice.append(Dice())
     
+    def remove_dice(self, num: int):
+        """
+        Inputs:
+            num: Nonnegative integer number of Dice objects to remove from player
+        Purpose: To remove dice from the player's inventory
+        """
+        self.Dice = self.Dice[:max(0, len(self.Dice)-num)]
+
     def roll(self):
         """
         Purpose: To roll all of the player's dice for one turn
@@ -181,14 +190,14 @@ class Player(object):
         if self.maxHP < 1:
             self.maxHP = 1
             
-    def update_statuses(self):
+    def update_statuses(self, enemy):
         """
         Purpose: Activate all the status effects of the player for a turn,
         and remove any statuses that expire
         """
         # Update each status effect object
         for stat in self.get_status_effects():                                          
-            stat.status_use(self)
+            stat.status_use(self, enemy)
             time.sleep(.4)
             
     def remove_status(self, status):

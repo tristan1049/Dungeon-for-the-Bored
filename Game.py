@@ -18,12 +18,10 @@ class Game(object):
         Purpose: To initialize a dice battle game
         """
         if save_dict == None:
-            self.player = Player.Player(player_name)  
-            self.player.add_dice(Dice.Dice())
-            self.player.add_dice(Dice.Dice())
+            self.player = Player.Player(player_name) 
+            self.player.add_dice(2) 
             if player_name == "dev":
-                for i in range(8):
-                    self.player.add_dice(Dice.Dice())
+                self.player.add_dice(8)
 
         else:
             self.player = save_dict['player']
@@ -78,7 +76,7 @@ class Game(object):
         
         # Add a die to the player's dice upon beating first boss
         if self.level == 6 and len(self.player.Dice) == 2:
-            self.player.add_dice(Dice.Dice())
+            self.player.add_dice(1)
 
         # Create a fight instance for the next floor and start the battle
         f = Fight.Fight(self.floor, self.player, self.floor.get_enemy())

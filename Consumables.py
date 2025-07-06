@@ -32,6 +32,8 @@ class Consumable(object):
         Purpose: To provide a better way of equality checking for items
         Output: Boolean of whether other consumable properties match self
         """
+        if not other:
+            return False
         # If properties are the same, though they may not be
         # the same object instance, they are functionally equal and can
         # be interchanged when being used
@@ -207,6 +209,8 @@ class Rejuv_Potion(HP_Potion):
         Purpose: To provide a better way of equality checking for items
         Output: Boolean of whether other consumable properties match self
         """
+        if not other:
+            return False
         return (self.name == other.name) and (self.uses == other.uses) and (self.turns == other.turns)
             
     
@@ -295,3 +299,74 @@ class Major_Damage_Scroll(Dmg_Scroll):
         """
         super(Major_Damage_Scroll, self).__init__(damage)
         self.name = 'Major Damage Scroll'
+
+
+class Rabbit_Foot(Consumable):
+    """Creates a Rabbit Foot object"""
+    def __init__(self):
+        self.uses = 1
+        self.battles = 1
+        self.dice = 2
+        self.name = "Rabbit's Foot"
+        self.activated = False
+        self.enemy = None
+
+    def use(self, player: Player, enemy: Enemy=None):
+        """
+        Inputs:
+            player: The player object
+            enemy: The enemy object
+        Purpose: To use the object to temporarily increase the number 
+        of dice for the player for 1 battle
+        """
+        if self.can_use():
+            self.uses -= 1
+            
+            player.status_effects.append(self)
+            player.add_dice(2)
+            
+            print("You successfully used {}.".format(self.name))
+            time.sleep(1)
+            print("You gained {} dice for battle!".format(self.dice))
+            time.sleep(2)
+        
+        if self.uses <= 0:
+            player.remove_item(self)
+
+    def status_use(self, player: Player, enemy: Enemy=None):
+        """
+        Inputs:
+            player: The player object
+            enemy: Enemy object, default to None for potions
+        Purpose: To maintain activation status and remove dice from player after use
+        """
+        # Activate if enemy present and not yet activated
+        if enemy and not self.activated:
+            self.activated = True
+            self.enemy = enemy
+            self.battles -= 1
+
+        # Remove status effect if activated, given different enemy, and out of battles
+        if self.activated and enemy != self.enemy:
+            if self.battles <= 0:
+                player.remove_dice(2)
+                player.remove_status(self)
+            else:
+                self.battles -= 1
+
+    def __str__(self):
+        """
+        Purpose: To represent the object in string form
+        """
+        return('{}: \n \nTemporarily increases the number of dice of the user by {}\
+        \nfor the current or next battle. Usable in combat and out of combat'.format(self.name, self.dice))
+
+    def __eq__(self, other):
+        """
+        Purpose: To provide a better way of equality checking for items
+        Output: Boolean of whether other consumable properties match self
+        """
+        if not other:
+            return False
+        return (self.name == other.name) and (self.activated == other.activated) \
+            and (self.uses == other.uses) and (self.battles == other.battles) and (self.enemy == other.enemy)

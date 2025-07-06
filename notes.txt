@@ -3,23 +3,80 @@ These are notes for the project, involving ideas, plans, and bugs.
 ----------------------------------------------------------------------------------
 Bugs:
 ----
+- Restore health after successful playthrough
+
+- Give message for wrong name at beginning
+
+- Add equality checks to all items in consumables
+
+- Status effects list just cleared instead of status effects being removed through a call
+  This leads to things like Rabbit's Foot not removing the added dice
+
+- Add __ne__ to equality checks
 ----------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------
 Improvements:
 ------------
+- Use print queue rather than just printing and clearing whenever
+
+- Reorganize file structure / folders / placement of functions
+
+- Extract more helper functions from code
+
+- Display floor level
+
+- Display current status effects and duration of them
+
 - Split inventory into different sections: potions, scrolls, etc
+
+- Add more floors, enemies, bosses, and items
+
+- Create new kinds of items:
+  - Item to shield some amount of damage for some amount of turns
+  - Items that last for some set number of battles
+
+- Have enemies be able to have dialogue
+
+- Allow shortcuts for multiple fighting rounds (f3 for 3 rounds, f5 for 5 rounds)
+
+- Show current status effects
+
+- Have defense stat
+
+- Message for getting new dice
+
+- Healing, damage is more effective with levels
+  - Maybe not items, but some kind of ability?
+
+- Enemies can use items
 ----------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------
 Ideas:
 -----
 - Add gear that players can equip to certain slots, gives boosts 
-    - Add damage reduction, dodging, critical hits, etc.
+  - Add damage reduction, dodging, critical hits, etc.
+  - Set items???
+  - Items do something if certain roll occurs?
+    - Add poison, add defense, score addition or multiplier
+
+- Add new abilities, such as poison or stun
 
 - Add items that increase things such as luck (probability of getting items)
 
 - Add money system
 
 - Add bag limit (can be expanded permanently with something like money)
+
+- Add rare mob, gives special item
+
+- Have inventory actually look like a numbered bag with slots, with names
+  of items in each slot
+
+- Abilities that activate on certain number roll or sum
+
+- speedup option
+
+- auto option
 ----------------------------------------------------------------------------------
