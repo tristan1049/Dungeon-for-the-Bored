@@ -32,6 +32,8 @@ class Enemy(Player.Player):
             player.add_item(item)
             print('You got a {}!!'.format(item.get_name()))
             time.sleep(.4)
+        if (self.items):
+            print()
         self.items = []
     
     def __eq__(self, other):

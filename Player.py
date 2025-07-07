@@ -191,14 +191,17 @@ class Player(object):
         if self.maxHP < 1:
             self.maxHP = 1
             
-    def update_statuses(self, q, enemy):
+    def update_statuses(self, enemy):
         """
         Purpose: Activate all the status effects of the player for a turn,
         and remove any statuses that expire
         """
         # Update each status effect object
         for stat in self.get_status_effects():
-            stat.status_use(self, q, enemy)
+            if (stat.does_interact_with_enemies()):
+                stat.status_use(self, enemy)
+            else:
+                stat.status_use(self)
             time.sleep(.4)
             
     def remove_status(self, status):

@@ -28,7 +28,7 @@ class Floor(object):
         return self.enemy
     
     def __str__(self):
-        return "Dungeon: Floor {}\nThere's a {}! Get ready to fight!".format(self.level, self.enemy.get_name())
+        return "Dungeon: Floor {}".format(self.level)
     
     
 class FloorEasy(Floor):

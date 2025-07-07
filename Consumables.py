@@ -1,4 +1,3 @@
-from Util import add_to_queue, print_queue
 import Player as Player
 import Enemy as Enemy
 import time
@@ -27,6 +26,13 @@ class Consumable(object):
         """
         return self.name
     
+    def does_interact_with_enemies(self):
+        """
+        Purpose: To determine if item interacts with enemies
+        Output: Boolean of whether item interacts with enemies
+        """
+        return False
+    
     def __eq__(self, other):
         """
         Purpose: To provide a better way of equality checking for items
@@ -51,7 +57,7 @@ class HPPotion(Consumable):
         self.HP_change = HP_change
         self.name = 'HP Potion'
         
-    def use(self, q, player: Player):
+    def use(self, player: Player):
         """
         Inputs: 
             player: The player object
@@ -64,11 +70,9 @@ class HPPotion(Consumable):
             player.healing(self.HP_change)
             self.uses -= 1
 
-            add_to_queue(q, f"You successfully used {self.name}")
-            print_queue(q, False)
+            print(f"You successfully used {self.name}")
             time.sleep(1)
-            add_to_queue(q, f"You healed for {player.get_HP() - prev_health} HP points!")
-            print_queue(q, False)
+            print(f"You healed for {player.get_HP() - prev_health} HP points!")
             time.sleep(2)
         
         if self.uses <= 0:
@@ -117,7 +121,7 @@ class FullHPPotion(HPPotion):
         super(FullHPPotion, self).__init__(HP_change)
         self.name = 'Full HP Potion'
           
-    def use(self, q, player: Player):
+    def use(self, player: Player):
         """
         Inputs:
             player: The player object
@@ -129,11 +133,9 @@ class FullHPPotion(HPPotion):
             player.healing(player.get_maxHP())
             self.uses -= 1
 
-            add_to_queue(q, f"You successfully used {self.name}")
-            print_queue(q, False)
+            print(f"You successfully used {self.name}")
             time.sleep(1)
-            add_to_queue(q, f"You healed for {player.get_HP() - prev_health} HP points!")
-            print_queue(q, False)
+            print(f"You healed for {player.get_HP() - prev_health} HP points!")
             time.sleep(2)
 
         if self.uses <= 0:
@@ -160,7 +162,7 @@ class RejuvPotion(HPPotion):
         self.name = 'Rejuv Potion'
         self.turns = 5
         
-    def use(self, q, player: Player):
+    def use(self, player: Player):
         """
         Inputs:
             player: The player object
@@ -170,14 +172,13 @@ class RejuvPotion(HPPotion):
         if self.can_use():
             self.uses -= 1
             player.status_effects.append(self)
-            add_to_queue(q, f"You successfully used {self.name}.")
-            print_queue(q, False)
+            print(f"You successfully used {self.name}.")
             time.sleep(2)
         
         if self.uses <= 0:
             player.remove_item(self)
 
-    def status_use(self, q, player: Player):
+    def status_use(self, player: Player):
         """
         Inputs:
             player: The player object
@@ -188,8 +189,7 @@ class RejuvPotion(HPPotion):
             prev_health = player.get_HP()
             player.healing(self.HP_change)
             self.turns -= 1
-            add_to_queue(q, f"You healed for {player.get_HP() - prev_health} HP points from {self.name}!")
-            print_queue(q, False)
+            print(f"You healed for {player.get_HP() - prev_health} HP points from {self.name}!")
         
         # If no turns left, remove status. Always remove immediately when status is gone
         if self.turns <= 0:
@@ -232,7 +232,7 @@ class DmgScroll(Consumable):
         self.name = 'Dmg Scroll'
         self.damage = damage
         
-    def use(self, q, player: Player, enemy: Enemy=None):
+    def use(self, player: Player, enemy: Enemy=None):
         """
         Inputs:
             player: The player object
@@ -241,13 +241,11 @@ class DmgScroll(Consumable):
         """
         # Can't use damage scrolls outside of battle
         if not enemy:
-            add_to_queue(q, "Can't use item outside of battle!")
-            print_queue(q)
+            print("Can't use item outside of battle!")
             time.sleep(2)
             return
         if not enemy.is_alive():
-            add_to_queue(q, "Can't use item outside of battle!")
-            print_queue(q)
+            print("Can't use item outside of battle!")
             time.sleep(2)
             return
 
@@ -257,15 +255,20 @@ class DmgScroll(Consumable):
             enemy.damage(self.damage)
             self.uses -= 1
             
-            add_to_queue(q, f"You successfully used {self.name}\n")
-            print_queue(q, False)
+            print(f"You successfully used {self.name}\n")
             time.sleep(1)
-            add_to_queue(q, f"You hurt {enemy.get_name()} for {prev_en_health - enemy.get_HP()} damage!\n")
-            print_queue(q, False)
+            print(f"You hurt {enemy.get_name()} for {prev_en_health - enemy.get_HP()} damage!\n")
             time.sleep(2)
         
         if self.uses <= 0:
             player.remove_item(self)
+
+    def does_interact_with_enemies(self):
+        """
+        Purpose: To determine if item interacts with enemies
+        Output: Boolean of whether item interacts with enemies
+        """
+        return True
 
     def __str__(self):
         """
@@ -322,7 +325,7 @@ class RabbitFoot(Consumable):
         self.activated = False
         self.enemy = None
 
-    def use(self, q, player: Player):
+    def use(self, player: Player):
         """
         Inputs:
             player: The player object
@@ -336,11 +339,9 @@ class RabbitFoot(Consumable):
             player.status_effects.append(self)
             player.add_dice(2)
             
-            add_to_queue(q, f"You successfully used {self.name}\n")
-            print_queue(q, False)
+            print(f"You successfully used {self.name}\n")
             time.sleep(1)
-            add_to_queue(q, f"You gained {self.dice} dice for this battle!\n")
-            print_queue(q, False)
+            print(f"You gained {self.dice} dice for this battle!\n")
             time.sleep(2)
         
         if self.uses <= 0:

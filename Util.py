@@ -34,24 +34,24 @@ def clear_queue(queue):
     queue.clear()
     return queue
 
-def print_queue(queue, do_queue_clear=True):
+def print_queue(queue, queue_clear=True, console_clear=True):
     """Print and clear the print queue, returning queue"""
     sys.stdout.flush()
-    if (platform.system() == "Windows"):
-        os.system("cls")
-    else:
-        os.system("clear")
-    print("\n".join(queue))
-    if do_queue_clear:
+    if (console_clear):
+        if (platform.system() == "Windows"):
+            os.system("cls")
+        else:
+            os.system("clear")
+    if (len(queue) > 0):
+        print("\n".join(queue))
+    if queue_clear:
         queue.clear()
     return queue
 
-def input_with_queue(queue, input_string, do_queue_clear=True):
+def input_with_queue(queue, input_string, queue_clear=True, console_clear=True):
     """Print the print queue to the user with input message,
     and return the user input string"""
-    print_queue(queue)
-    if do_queue_clear:
-        queue.clear()
+    print_queue(queue, queue_clear, console_clear)
     sys.stdout.flush()
     return input(input_string).strip()
 

@@ -1,5 +1,5 @@
 import Game
-from Util import add_to_queue, add_list_to_queue, print_queue, input_with_queue
+from Util import add_to_queue, add_list_to_queue, print_queue, input_with_queue, clear_queue
 from Util import del_file, load_obj, get_save_names
 
 def game_intro():
@@ -23,7 +23,7 @@ def game_intro():
         add_to_queue(q, 'Save files:\n(1) New Game\n')
         add_list_to_queue(q, save_files_list)
 
-        # Take in input for each file name 
+        # Take in input for each file name
         choice_save = input_with_queue(q, '\nChoose a Save File: ')
         save_name = None
         if choice_save in save_files_map:
@@ -48,13 +48,13 @@ def game_intro():
         elif choice_save.lower() in ['new', 'n', '1']:
             add_to_queue(q, "This dungeon is filled with, like, monsters and shit, " + 
                 "you have to kill them! I hope you're ready, because that's the only way out.")
-            input_with_queue(q, 'Press enter to continue: ')
+            input_with_queue(q, "Press enter to continue: ")
             player_name = input_with_queue(q, "Anyways, what's your name? ")
             break
         else:
             add_to_queue(q, "Choose an available option\n")
 
-    
+    clear_queue(q)
     input_with_queue(q, "Alright {}, we\'re all counting on you! Who knows, you may even find some cool things along the way...".format(player_name))
     return player_name, player_data
 

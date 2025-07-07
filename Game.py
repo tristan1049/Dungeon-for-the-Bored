@@ -3,7 +3,7 @@ import Floor
 import Fight
 import time
 from Util import save_obj
-from Util import add_to_queue
+from Util import add_to_queue, print_queue
 
 
 class Game(object):
@@ -106,5 +106,6 @@ class Game(object):
                 add_to_queue(self.q, "You safely escape the dungeon with your life, and live to fight another day.")
             elif self.get_status() == 'lost':
                 add_to_queue(self.q, 'Oh noo! You died!')
+            print_queue(self.q)
             save_obj({'player': self.get_player()}, self.get_player().get_name())  
         time.sleep(2)

@@ -2,7 +2,7 @@ from Enemy import Enemy
 from Floor import Floor
 from Consumables import Consumable
 from Util import inp
-from Util import add_to_queue, add_list_to_queue, print_queue, input_with_queue, clear_queue
+from Util import add_to_queue, add_list_to_queue, print_queue, input_with_queue
 import time
 import math
 import Illustrations
@@ -66,7 +66,7 @@ class Fight(object):
         Purpose: To get options for the player for consuming a selected item
         """
         q = []
-        add_to_queue(q, self.get_item_description(item))
+        add_list_to_queue(q, self.get_item_description(item))
         add_to_queue(q, "Your options are:")
         add_to_queue(q, "Use")
         add_to_queue(q, "Throw away")
@@ -87,14 +87,15 @@ class Fight(object):
         exp_bar = "[" + "*"*progress + " "*(20 - progress) + "]"
         add_to_queue(q, f"Level {player.get_level()}")
         add_to_queue(q, exp_bar)
+        return q
 
-    def print_throw_away_item(self, item: Consumable, q):
+    def print_throw_away_item(self, q, item: Consumable):
         """
         Inputs:
             item: Consumable object in player's inventory
         Purpose: To print the description of an item as a header and throw away the item
         """
-        add_to_queue(q, self.get_item_description(item))
+        add_list_to_queue(q, self.get_item_description(item))
         add_to_queue(q, f"You've successfully thrown away a {item.get_name()}.")
         print_queue(q)
         self.player.remove_item(item)
@@ -189,11 +190,11 @@ class Fight(object):
 
         add_list_to_queue(q, self.get_dice_illustration(p_roll, e_roll))
 
-        add_to_queue(q, f"{player.get_name()}")
-        add_to_queue(q, f"HP:{player.get_HP(), player.get_maxHP()}")
+        add_to_queue(q, f"\n{player.get_name()}")
+        add_to_queue(q, f"HP:{player.get_HP()}/{player.get_maxHP()}")
 
         # Get the experience bar for the player
-        add_to_queue(q, f"{self.get_player_level_text(player)}")
+        add_list_to_queue(q, self.get_player_level_text(player))
         add_to_queue(q, "---"*20)
         return q
 
@@ -205,11 +206,11 @@ class Fight(object):
         q = []
         add_to_queue(q, "Congrats!")
         add_to_queue(q, f"{player.get_name()}: {player.get_HP()}/{player.get_maxHP()}")
-        add_to_queue(q, f"{self.get_player_level_text(player)}")
+        add_list_to_queue(q, self.get_player_level_text(player))
         add_to_queue(q, "---"*20 + "")
-        add_to_queue(q, self.get_resting_options())
+        add_list_to_queue(q, self.get_resting_options())
         print_queue(q)
-        action = inp("What would you like to do? ").lower().strip()
+        action = inp("\nWhat would you like to do? ").lower().strip()
         return action
     
     def prompt_fight_action(self, q):
@@ -218,11 +219,15 @@ class Fight(object):
         Output: String of action input by player in game
         """
         add_to_queue(q, f"{self.floor}")
+        if (self.intro):
+            add_to_queue(q, f"There's a {self.enemy.get_name()}! Get ready to fight!")
+            self.intro = False
+        add_to_queue(q, "")
         add_list_to_queue(q, self.get_battle_options())
-        action = input_with_queue(q, "What do you want to do? ").lower()
+        action = input_with_queue(q, "\nWhat do you want to do? ").lower()
         return action
 
-    def prompt_item_menu(self, q, player: Player, enemy: Enemy=None):
+    def prompt_item_menu(self, player: Player, enemy: Enemy=None):
         """
         Inputs:
             player: A player object in the game
@@ -231,6 +236,7 @@ class Fight(object):
         Output: State of the battle
         q is emptied on this function call
         """
+        q = []
         while True:
             # Get all of the player's items as a dictionary of name to object
             items_dict = player.get_items()
@@ -247,7 +253,7 @@ class Fight(object):
                 item = items_dict_lower[action][0]
                 while True:
                     # Get the description and options for selected item
-                    add_to_queue(q, self.get_item_options)
+                    add_list_to_queue(q, self.get_item_options(item))
                     # Wait for action on selected item
                     item_action = input_with_queue(q, "Choose an action: ").strip()
                     # Go back to items list if back selected
@@ -258,34 +264,35 @@ class Fight(object):
                         if enemy is not None:
                             # If in battle, return as each item usage means getting hit by enemy
                             if enemy.is_alive():
-                                add_to_queue(q, f"{self.get_fight_screen(self.player, self.enemy)}")
+                                add_list_to_queue(q, self.get_fight_screen(self.player, self.enemy))
                                 print_queue(q)
-                                item.use(self.player, self.enemy)
+                                if (item.does_interact_with_enemies()):
+                                    item.use(self.player, self.enemy)
+                                else:
+                                    item.use(self.player)
 
                                 # Update statuses for the player
-                                add_to_queue(q, f"{self.get_fight_screen(self.player, self.enemy)}")
+                                add_list_to_queue(q, self.get_fight_screen(self.player, self.enemy))
                                 print_queue(q)
                                 self.player.update_statuses(self.enemy)
                                 time.sleep(1)
 
                                 # Continue to enemy turn after status update
-                                add_to_queue(q, f"{self.get_fight_screen(self.player, self.enemy)}")
-                                print_queue(q)
                                 return self.enemy_turn(q, player, enemy, [])
 
                         # Otherwise not in battle. Use item with item options screen
                         else:
-                            add_to_queue(q, f"{self.get_item_description(item)}")
+                            add_list_to_queue(q, self.get_item_description(item))
                             print_queue(q)
                             item.use(self.player)
                             break
                         
                     # If throwing item away, print
                     elif item_action in ["throw away", "throw", "t"]:
-                        self.print_throw_away_item(item, q)
+                        self.print_throw_away_item(q, item)
                         break
                         
-    def print_leveling(self, player: Player, enemy: Enemy, q):
+    def print_leveling(self, player: Player, enemy: Enemy):
         """
         Inputs:
             player: The player object in the battle
@@ -298,18 +305,15 @@ class Fight(object):
         new_level = player.add_exp(enemy_exp)
         levels_increased = new_level - cur_level
 
-        add_to_queue(q, f"You earned {enemy_exp} experience")
-        print_queue(q, False)
+        print(f"You earned {enemy_exp} experience")
         time.sleep(2)
-        add_to_queue(q, "")
+        print()
         # If increased in level, output congrats to player
         if levels_increased > 0:
             for l in range(1, levels_increased+1):
-                add_to_queue(q, f"Congrats!! You've reached level {str(cur_level + l)}!")
-                print_queue(q, False)
+                print(f"Congrats!! You've reached level {str(cur_level + l)}!")
                 time.sleep(1)
             time.sleep(1.5)
-        clear_queue(q)
 
     def player_fight(self, q, player: Player, enemy: Enemy):
         """
@@ -322,24 +326,19 @@ class Fight(object):
         """
         # Get the fight stats and update statuses
         add_list_to_queue(q, self.get_fight_screen(player, enemy))
-        print_queue(q, False)
-        self.player.update_statuses(q, enemy)
+        print_queue(q)
+        self.player.update_statuses(enemy)
 
         # Get the player's roll after updating statuses
         p_roll = self.player.roll()
 
         #Sleep in between showing rolls and doing damage to give time for player to see
         time.sleep(1)
-        
-        clear_queue(q)
-        add_list_to_queue(q, self.get_fight_screen(player, enemy))
-        print_queue(q)
         add_list_to_queue(q, self.get_fight_screen(player, enemy, p_roll))
-        print_queue(q, False)
+        print_queue(q)
         
         time.sleep(1)
-        add_to_queue(q, f"You rolled a {sum(p_roll)}")
-        print_queue(q, False)
+        print(f"You rolled a {sum(p_roll)}")
         time.sleep(1)
 
         #Damage the enemy with the player's roll
@@ -347,17 +346,14 @@ class Fight(object):
 
         # Give all of the enemy's items and experience to player
         if not enemy.is_alive():
-            add_to_queue(q, "You've killed the enemy!")
-            print_queue(q, False)
+            print("You've killed the enemy!")
             enemy.give_items(player)
             time.sleep(1)
-            add_to_queue(q, "")
-            self.print_leveling(player, enemy, q)
+            self.print_leveling(player, enemy)
             return "won"
     
         # If enemy is alive, let enemy do damage and show roll
-        add_to_queue(q, f"{enemy.get_name()} is still alive!")
-        print_queue(q)
+        print(f"{enemy.get_name()} is still alive!")
         time.sleep(2)
 
         return p_roll
@@ -377,11 +373,10 @@ class Fight(object):
 
         e_roll = self.enemy.roll()
         add_list_to_queue(q, self.get_fight_screen(player, enemy, p_roll, e_roll))
-        print_queue(q, False)
+        print_queue(q)
         
         time.sleep(1)
-        add_to_queue(q, f"{enemy.get_name()} rolled a {sum(e_roll)}")
-        print_queue(q)
+        print(f"{enemy.get_name()} rolled a {sum(e_roll)}")
         
         player.damage(sum(e_roll))
         
@@ -409,8 +404,7 @@ class Fight(object):
             # If viewing items, give interactive inventory prompt.
             elif action in ["items", "i"]:
                 # Check if the battle ended with the use of an item
-                add_list_to_queue(q, self.get_fight_screen(self.player, self.enemy))
-                result = self.prompt_item_menu(q, self.player, self.enemy)
+                result = self.prompt_item_menu(self.player, self.enemy)
                 if result in ["won", "lost"]:
                     return result
 
@@ -427,7 +421,6 @@ class Fight(object):
         """
         Purpose: To simulate the entire battle between a player and enemy
         """
-        q = []
         # Start battle one turn at a time
         while True:
             result = self.turn()
@@ -442,7 +435,7 @@ class Fight(object):
                         return "ran"
     
                     elif action in ["items", "i"]:
-                        self.prompt_item_menu(q, self.player)
+                        self.prompt_item_menu(self.player)
             
             if result == "lost" or result == "ran":
                 return result
