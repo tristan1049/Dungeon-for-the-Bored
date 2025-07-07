@@ -11,20 +11,14 @@ Bugs:
 
 - Status effects list just cleared instead of status effects being removed through a call
   This leads to things like Rabbit's Foot not removing the added dice
-
-- Add __ne__ to equality checks
 ----------------------------------------------------------------------------------
 
 ----------------------------------------------------------------------------------
 Improvements:
 ------------
-- Use print queue rather than just printing and clearing whenever
-
 - Reorganize file structure / folders / placement of functions
 
 - Extract more helper functions from code
-
-- Display floor level
 
 - Display current status effects and duration of them
 
@@ -37,8 +31,6 @@ Improvements:
   - Items that last for some set number of battles
 
 - Have enemies be able to have dialogue
-
-- Allow shortcuts for multiple fighting rounds (f3 for 3 rounds, f5 for 5 rounds)
 
 - Show current status effects
 

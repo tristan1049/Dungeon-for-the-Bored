@@ -101,15 +101,18 @@ class Fight(object):
         self.player.remove_item(item)
         time.sleep(2)
 
-    def prompt_items_list(self, items_dict: dict):
+    def prompt_items_list(self, player: Player, items_dict: dict):
         """
         Inputs:
+            player: Player object
             items_dict: Dictionary of item names to item objects that are in 
                 the player's inventory
         Purpose: To print out the list of items and amounts in the player's inventory.
         Output: Name of item to inspect
         """
         q = []
+        q_header = self.get_item_menu_header(player)
+        add_list_to_queue(q, q_header)
         add_to_queue(q, "Your items:")
         
         # Map each item name to an integer for hotkey inputs, and print items
@@ -237,13 +240,14 @@ class Fight(object):
         q is emptied on this function call
         """
         q = []
+        q_header = self.get_item_menu_header(player)
         while True:
             # Get all of the player's items as a dictionary of name to object
             items_dict = player.get_items()
             items_dict_lower = {i.lower():items_dict[i] for i in items_dict}
 
             # Print each item as a separate screen and wait for item action
-            action = self.prompt_items_list(items_dict)
+            action = self.prompt_items_list(player, items_dict)
 
             # If back from items screen, returns to previous screen
             if action in ["back", "b"]:
@@ -253,6 +257,7 @@ class Fight(object):
                 item = items_dict_lower[action][0]
                 while True:
                     # Get the description and options for selected item
+                    add_list_to_queue(q, q_header)
                     add_list_to_queue(q, self.get_item_options(item))
                     # Wait for action on selected item
                     item_action = input_with_queue(q, "Choose an action: ").strip()
@@ -282,6 +287,7 @@ class Fight(object):
 
                         # Otherwise not in battle. Use item with item options screen
                         else:
+                            add_list_to_queue(q, q_header)
                             add_list_to_queue(q, self.get_item_description(item))
                             print_queue(q)
                             item.use(self.player)
@@ -289,8 +295,23 @@ class Fight(object):
                         
                     # If throwing item away, print
                     elif item_action in ["throw away", "throw", "t"]:
+                        print_queue(q_header, False)
+                        add_list_to_queue(q, q_header)
                         self.print_throw_away_item(q, item)
                         break
+
+    def get_item_menu_header(self, player: Player):
+        """
+        Inputs:
+            player: The player object in the battle
+        Purpose: Return queue of the item menu header text
+        """
+        q_start = []
+        add_to_queue(q_start, f"{self.floor}")
+        add_to_queue(q_start, f"{player.get_name()}")
+        add_to_queue(q_start, f"HP:{player.get_HP()}/{player.get_maxHP()}")
+        add_to_queue(q_start, "---"*20 + "\n")
+        return q_start
                         
     def print_leveling(self, player: Player, enemy: Enemy):
         """
